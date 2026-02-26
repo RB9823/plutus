@@ -111,8 +111,16 @@ class DiffBroadcaster:
                 try:
                     envelope = await self._transport.receive()
                 except Exception:
-                    logger.exception("receive loop terminated due to transport error")
-                    break
+                    logger.exception("receive loop hit transport error")
+                    reconnect = getattr(self._transport, "reconnect", None)
+                    if reconnect is None:
+                        break
+                    try:
+                        await reconnect()
+                    except Exception:
+                        logger.exception("receive loop reconnect failed")
+                        break
+                    continue
                 if envelope.msg_type == MessageType.CRDT_UPDATE:
                     self._store.import_updates(envelope.payload)
         finally:
@@ -127,6 +135,10 @@ class DiffBroadcaster:
         if not self._event_log:
             return
         for entry in self._event_log.replay():
-            envelope = Envelope.decode(entry)
+            try:
+                envelope = Envelope.decode(entry)
+            except ValueError:
+                logger.warning("skipping malformed event log entry during replay")
+                continue
             if envelope.sender != self._store.peer_id:
                 self._store.import_updates(envelope.payload)
