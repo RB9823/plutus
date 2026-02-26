@@ -15,6 +15,7 @@ async def run_agent(
     write_data: dict,
     expected_keys: set[str],
     delay: float = 0.5,
+    settle_before_write: float = 0.5,
 ):
     """Connect an agent to the daemon and observe auto-sync convergence."""
     await anyio.sleep(delay)  # stagger connections
@@ -22,11 +23,12 @@ async def run_agent(
     agent = PlutusAgent(name=name, peer_id=peer_id)
     await agent.join(server_uri=f"ws://localhost:{port}")
     print(f"[{name}] connected to daemon")
+    await anyio.sleep(settle_before_write)
 
     # Write data
     for key, value in write_data.items():
         agent.state("shared").set(key, value)
-    agent.commit()
+    await agent.sync()
     print(f"[{name}] wrote {len(write_data)} entries")
 
     # Wait for remote updates to arrive automatically.

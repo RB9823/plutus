@@ -29,3 +29,7 @@
 - Added integration test for two networked `PlutusAgent` instances through `SyncDaemon` verifying automatic bidirectional sync without manual imports.
 - Added malformed input tests for envelope decode and VFS JSON ingest; expanded total tests from 44 to 61 passing.
 - Updated `examples/networked_swarm.py` to use automatic real-time sync via `PlutusAgent.join()` and background broadcaster loops.
+
+## 2026-02-26 - Batch 4: Verification Stabilization
+- Fixed networked example convergence race by switching per-agent writes to `await agent.sync()` and adding post-join settle delay, preventing send-queue race conditions before leave.
+- Re-ran full verification commands: `uv run pytest tests/ -v`, `uv run python examples/basic_swarm.py`, `uv run python examples/networked_swarm.py`, and `uv run python examples/blueprint_example.py`.
