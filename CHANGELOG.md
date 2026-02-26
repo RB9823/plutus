@@ -50,3 +50,9 @@
   - issue templates and PR template for contributor onboarding.
 - Expanded `pyproject.toml` package metadata (readme, license, classifiers, keywords, project URLs) for PyPI/open-source discoverability.
 - Verified release packaging with `uv build` and kept contributor default checks fast (`pytest` required, lint/type optional).
+
+## 2026-02-26 - Batch 8: PyPI Deployment Workflow Hardening
+- Extended publish workflow to support both `testpypi` and `pypi` via `workflow_dispatch` input.
+- Added release-tag/version guard in publish workflow to prevent publishing mismatched version tags.
+- Added dedicated `testpypi` publish job/environment for release rehearsal.
+- Updated release docs with exact Trusted Publishing fields and dry-run flow.

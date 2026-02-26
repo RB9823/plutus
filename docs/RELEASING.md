@@ -4,9 +4,24 @@ This project uses `uv` for build/test/publish.
 
 ## One-Time Setup
 
-1. Create a PyPI project named `plutus`.
-2. Configure PyPI Trusted Publishing for this repository (`pypa/gh-action-pypi-publish`).
-3. Ensure GitHub Actions has `id-token: write` permission for publish workflow.
+1. Create package projects:
+   - PyPI: `plutus`
+   - TestPyPI: `plutus` (recommended for rehearsal)
+2. Configure Trusted Publishing in both indexes.
+3. Ensure GitHub Actions publish jobs have `id-token: write` (already set in workflow).
+
+### Trusted Publishing values
+
+In PyPI/TestPyPI project settings, add a Pending Publisher with:
+
+- Owner: `<your-github-owner>`
+- Repository: `<your-repo>`
+- Workflow name: `publish.yml`
+- Environment:
+  - `pypi` for production publishing
+  - `testpypi` for rehearsal publishing
+
+The publish workflow is at `.github/workflows/publish.yml`.
 
 ## Release Checklist
 
@@ -38,6 +53,19 @@ git tag v0.1.1
 git push origin v0.1.1
 ```
 8. Publish is handled by `.github/workflows/publish.yml` on Release publish.
+   - Tag must match package version (e.g. tag `v0.1.1` with `version = "0.1.1"`).
+
+## TestPyPI Dry Run (recommended)
+
+Run workflow manually from GitHub Actions:
+- Workflow: `Publish`
+- Input `repository`: `testpypi`
+
+Then install from TestPyPI:
+
+```bash
+uv pip install --index-url https://test.pypi.org/simple/ plutus
+```
 
 ## Manual Publish (fallback)
 

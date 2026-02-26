@@ -63,6 +63,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for full contributor workflow.
 ## Releasing
 
 See [docs/RELEASING.md](docs/RELEASING.md) for the uv-based release process and PyPI publishing setup.
+Use workflow-dispatch to publish to `testpypi` first, then publish to `pypi` from a GitHub Release.
 
 ## Project Health
 

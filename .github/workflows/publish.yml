@@ -4,6 +4,15 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      repository:
+        description: "Target package index"
+        required: true
+        default: testpypi
+        type: choice
+        options:
+          - testpypi
+          - pypi
 
 jobs:
   build:
@@ -17,6 +26,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Validate release tag matches package version
+        if: github.event_name == 'release'
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE_VERSION="$(python - <<'PY'
+          import tomllib
+          from pathlib import Path
+          data = tomllib.loads(Path("pyproject.toml").read_text())
+          print(data["project"]["version"])
+          PY
+          )"
+          if [ "${TAG_VERSION}" != "${PACKAGE_VERSION}" ]; then
+            echo "Release tag (${TAG_VERSION}) does not match pyproject version (${PACKAGE_VERSION})."
+            exit 1
+          fi
+
       - name: Build distributions
         run: uv build
 
@@ -28,6 +53,7 @@ jobs:
 
   publish-pypi:
     needs: build
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -42,3 +68,23 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-testpypi:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.repository == 'testpypi'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment:
+      name: testpypi
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
