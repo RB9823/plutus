@@ -17,3 +17,15 @@
 - Added agent-side auto-reconnect support path (`auto_reconnect=True`), including sync-time reconnect attempts and broadcaster task restarts.
 - Added input hardening and logging for daemon update imports and VFS JSON ingest (`sync_from_disk`) error handling.
 - Added namespace value validation in `Namespace.set()` to reject unsupported CRDT value types early.
+
+## 2026-02-26 - Batch 3: Feature Completeness + Concurrency + Coverage Expansion
+- Reworked agent broadcaster background lifecycle to use explicit receive/send tasks, fixing TaskGroup cancellation issues on leave/reconnect.
+- Added Blueprint per-node timeout support (`Blueprint.execute(timeout=...)`) with async handler coverage and timeout tests.
+- Fixed `@shared` namespace behavior and added `synced(auto_commit=True)` capability with tests.
+- Added namespace input type validation and tuple normalization in `Namespace.set()` with dedicated tests.
+- Added EventLog retention controls (`max_entries`, `max_bytes`), compaction API (`compact(snapshot_bytes)`), and lock-protected read/write access.
+- Added lock-based concurrency protections in `PeerManager` and `CRDTStore` internals.
+- Hardened `E2BSandboxAdapter` with startup/runtime failure handling, pre-start guards, and new mock-based unit tests.
+- Added integration test for two networked `PlutusAgent` instances through `SyncDaemon` verifying automatic bidirectional sync without manual imports.
+- Added malformed input tests for envelope decode and VFS JSON ingest; expanded total tests from 44 to 61 passing.
+- Updated `examples/networked_swarm.py` to use automatic real-time sync via `PlutusAgent.join()` and background broadcaster loops.

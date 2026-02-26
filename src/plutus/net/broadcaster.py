@@ -86,15 +86,18 @@ class DiffBroadcaster:
         self._running = True
         task_status.started()
         try:
-            async with self._pending_recv:
-                async for update_bytes in self._pending_recv:
-                    if not self._running:
-                        break
-                    try:
-                        await self.broadcast_update(update_bytes)
-                    except Exception:
-                        logger.exception("failed to send CRDT update")
-                        break
+            while self._running:
+                try:
+                    update_bytes = await self._pending_recv.receive()
+                except anyio.EndOfStream:
+                    break
+                if not self._running:
+                    break
+                try:
+                    await self.broadcast_update(update_bytes)
+                except Exception:
+                    logger.exception("failed to send CRDT update")
+                    break
         finally:
             self._running = False
 

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
-import anyio
 from loro import VersionVector
 
 from plutus.core.document import Namespace, PlutusDoc
@@ -44,7 +44,8 @@ class PlutusAgent:
         self._lifecycle = LifecycleManager()
         self._shards = ShardManager()
         self._joined = False
-        self._task_group: anyio.abc.TaskGroup | None = None
+        self._receive_task: asyncio.Task[None] | None = None
+        self._send_task: asyncio.Task[None] | None = None
         self._last_synced_vv: VersionVector = self._plutus_doc.store.clone_oplog_vv()
         self._server_uri: str | None = None
         self._auth_token: str | None = None
@@ -95,19 +96,34 @@ class PlutusAgent:
         self._lifecycle.fire(LifecycleEvent.ON_STATE_CHANGE, self, diff_event)
 
     async def _start_broadcaster_tasks(self) -> None:
-        if self._task_group is not None or self._broadcaster is None:
+        if self._broadcaster is None:
             return
-        self._task_group = anyio.create_task_group()
-        await self._task_group.__aenter__()
-        await self._task_group.start(self._broadcaster.receive_loop)
-        await self._task_group.start(self._broadcaster.send_loop)
+        if self._receive_task is None or self._receive_task.done():
+            self._receive_task = asyncio.create_task(
+                self._broadcaster.receive_loop(),
+                name=f"plutus-{self.name}-receive-loop",
+            )
+        if self._send_task is None or self._send_task.done():
+            self._send_task = asyncio.create_task(
+                self._broadcaster.send_loop(),
+                name=f"plutus-{self.name}-send-loop",
+            )
 
     async def _stop_broadcaster_tasks(self) -> None:
-        if self._task_group is None:
+        tasks = [t for t in (self._receive_task, self._send_task) if t is not None]
+        self._receive_task = None
+        self._send_task = None
+        if not tasks:
             return
-        self._task_group.cancel_scope.cancel()
-        await self._task_group.__aexit__(None, None, None)
-        self._task_group = None
+        for task in tasks:
+            task.cancel()
+        for task in tasks:
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+            except Exception:
+                logger.debug("background broadcaster task exited with error", exc_info=True)
 
     async def _reconnect_transport(self) -> bool:
         if not self._auto_reconnect or self._server_uri is None:
