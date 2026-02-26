@@ -33,3 +33,6 @@
 ## 2026-02-26 - Batch 4: Verification Stabilization
 - Fixed networked example convergence race by switching per-agent writes to `await agent.sync()` and adding post-join settle delay, preventing send-queue race conditions before leave.
 - Re-ran full verification commands: `uv run pytest tests/ -v`, `uv run python examples/basic_swarm.py`, `uv run python examples/networked_swarm.py`, and `uv run python examples/blueprint_example.py`.
+
+## 2026-02-26 - Batch 5: Repository Baseline Snapshot
+- Added previously untracked scaffold files (package metadata, module export/init files, utility modules, and remaining examples) to leave the repository in a coherent committed state.
