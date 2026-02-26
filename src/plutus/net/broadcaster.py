@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from threading import Lock
 
 import anyio
 
@@ -30,6 +31,10 @@ class DiffBroadcaster:
         self._local_update_cb = None
         self._suppress_local_updates = 0
         self._pending_send, self._pending_recv = anyio.create_memory_object_stream[bytes](1024)
+        self._pending_lock = Lock()
+        self._pending_count = 0
+        self._pending_drained = anyio.Event()
+        self._pending_drained.set()
 
     def bind_transport(self, transport: Transport) -> None:
         self._transport = transport
@@ -56,6 +61,10 @@ class DiffBroadcaster:
 
         try:
             self._pending_send.send_nowait(update_bytes)
+            with self._pending_lock:
+                if self._pending_count == 0:
+                    self._pending_drained = anyio.Event()
+                self._pending_count += 1
         except anyio.WouldBlock:
             logger.warning("dropping local CRDT update because broadcaster queue is full")
         except (anyio.ClosedResourceError, anyio.BrokenResourceError):
@@ -98,6 +107,12 @@ class DiffBroadcaster:
                 except Exception:
                     logger.exception("failed to send CRDT update")
                     break
+                finally:
+                    with self._pending_lock:
+                        if self._pending_count > 0:
+                            self._pending_count -= 1
+                        if self._pending_count == 0:
+                            self._pending_drained.set()
         finally:
             self._running = False
 
@@ -131,7 +146,19 @@ class DiffBroadcaster:
 
     def stop(self) -> None:
         self._running = False
+        with self._pending_lock:
+            self._pending_count = 0
+            self._pending_drained.set()
         self._pending_send.close()
+
+    async def flush_pending(self, timeout: float | None = None) -> bool:
+        """Wait until queued local updates are drained by send_loop."""
+        if timeout is None:
+            await self._pending_drained.wait()
+            return True
+        with anyio.move_on_after(timeout) as scope:
+            await self._pending_drained.wait()
+        return not scope.cancel_called
 
     def replay_log(self) -> None:
         """Import all entries from the event log into the store."""

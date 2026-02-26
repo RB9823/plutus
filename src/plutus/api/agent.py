@@ -212,6 +212,7 @@ class PlutusAgent:
             except Exception:
                 pass
             if self._broadcaster:
+                await self._broadcaster.flush_pending(timeout=1.0)
                 self._broadcaster.stop()
             await self._stop_broadcaster_tasks()
             await self._transport.close()

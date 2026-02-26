@@ -36,3 +36,7 @@
 
 ## 2026-02-26 - Batch 5: Repository Baseline Snapshot
 - Added previously untracked scaffold files (package metadata, module export/init files, utility modules, and remaining examples) to leave the repository in a coherent committed state.
+
+## 2026-02-26 - Batch 6: Graceful Leave Flush
+- Added pending-update drain tracking in `DiffBroadcaster` and `flush_pending(timeout=...)`.
+- Updated `PlutusAgent.leave()` to await pending broadcast queue drain before stopping loops and closing transport, reducing last-moment message drops.
