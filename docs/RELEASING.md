@@ -5,8 +5,8 @@ This project uses `uv` for build/test/publish.
 ## One-Time Setup
 
 1. Create package projects:
-   - PyPI: `plutus`
-   - TestPyPI: `plutus` (recommended for rehearsal)
+   - PyPI: `plutus-sync`
+   - TestPyPI: `plutus-sync` (recommended for rehearsal)
 2. Configure Trusted Publishing in both indexes.
 3. Ensure GitHub Actions publish jobs have `id-token: write` (already set in workflow).
 
@@ -14,8 +14,8 @@ This project uses `uv` for build/test/publish.
 
 In PyPI/TestPyPI project settings, add a Pending Publisher with:
 
-- Owner: `<your-github-owner>`
-- Repository: `<your-repo>`
+- Owner: `RB9823`
+- Repository: `plutus`
 - Workflow name: `publish.yml`
 - Environment:
   - `pypi` for production publishing
@@ -64,7 +64,7 @@ Run workflow manually from GitHub Actions:
 Then install from TestPyPI:
 
 ```bash
-uv pip install --index-url https://test.pypi.org/simple/ plutus
+uv pip install --index-url https://test.pypi.org/simple/ plutus-sync
 ```
 
 ## Manual Publish (fallback)

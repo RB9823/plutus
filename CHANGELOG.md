@@ -56,3 +56,9 @@
 - Added release-tag/version guard in publish workflow to prevent publishing mismatched version tags.
 - Added dedicated `testpypi` publish job/environment for release rehearsal.
 - Updated release docs with exact Trusted Publishing fields and dry-run flow.
+
+## 2026-02-26 - Batch 9: Distribution Rename for PyPI Availability
+- Renamed package distribution from `plutus` to `plutus-sync` in `pyproject.toml`.
+- Updated project URLs to the live GitHub repository (`RB9823/plutus`).
+- Updated onboarding/release docs to use `plutus-sync` install commands while keeping import path `plutus`.
+- Regenerated lock metadata and verified build artifacts now produce `plutus_sync-0.1.0` wheel/sdist names.

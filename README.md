@@ -13,13 +13,13 @@ Plutus provides:
 ### 1. Install as a dependency
 
 ```bash
-uv add plutus
+uv add plutus-sync
 ```
 
 ### 2. Run locally from source
 
 ```bash
-git clone https://github.com/your-org/plutus.git
+git clone https://github.com/RB9823/plutus.git
 cd plutus
 uv sync --group dev
 uv run pytest tests/ -v
@@ -34,6 +34,8 @@ uv run python examples/blueprint_example.py
 ```
 
 ## Minimal Usage
+
+Install name is `plutus-sync`; import package remains `plutus`.
 
 ```python
 import anyio

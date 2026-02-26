@@ -1,5 +1,5 @@
 [project]
-name = "plutus"
+name = "plutus-sync"
 version = "0.1.0"
 description = "CRDT-based state management for agentic swarms"
 readme = "README.md"
@@ -29,10 +29,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/plutus"
-Repository = "https://github.com/your-org/plutus"
-Issues = "https://github.com/your-org/plutus/issues"
-Documentation = "https://github.com/your-org/plutus#readme"
+Homepage = "https://github.com/RB9823/plutus"
+Repository = "https://github.com/RB9823/plutus"
+Issues = "https://github.com/RB9823/plutus/issues"
+Documentation = "https://github.com/RB9823/plutus#readme"
 
 [project.optional-dependencies]
 e2b = ["e2b>=1.0"]
