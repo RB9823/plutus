@@ -39,6 +39,7 @@ uv run pytest tests/ -v
 uv run ruff check src tests
 uv run mypy src
 ```
+These checks are required in CI for pull requests and pushes to `main`.
 5. Build distributions:
 ```bash
 uv build

@@ -62,3 +62,16 @@
 - Updated project URLs to the live GitHub repository (`RB9823/plutus`).
 - Updated onboarding/release docs to use `plutus-sync` install commands while keeping import path `plutus`.
 - Regenerated lock metadata and verified build artifacts now produce `plutus_sync-0.1.0` wheel/sdist names.
+
+## 2026-02-26 - Batch 10: Open-Source Quality Sweep (Lint + Type + CI Enforcement)
+- Fixed all outstanding Ruff issues across source and tests (unused imports/variables, lambda assignment style, ambiguous variable naming).
+- Fixed all mypy issues across source modules, including safer descriptor annotation, CRDT value casting, msgpack import typing, and broadcaster callback typing.
+- Corrected `Namespace.get()` value unwrapping behavior so runtime semantics remain stable while keeping static typing clean.
+- Updated sandbox command execution to typed-compatible subprocess invocation and refreshed E2B install hint for renamed package (`plutus-sync`).
+- Re-enabled strict CI gates for lint + mypy in `.github/workflows/ci.yml`.
+- Updated contributor and release docs to reflect required static checks.
+- Verified full quality gate locally:
+  - `uv run pytest tests/ -q`
+  - `uv run ruff check src tests`
+  - `uv run mypy src`
+  - `uv build`

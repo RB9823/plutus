@@ -4,7 +4,7 @@ import anyio
 import pytest
 
 from plutus.core.store import CRDTStore
-from plutus.core.document import PlutusDoc, Namespace
+from plutus.core.document import PlutusDoc
 from plutus.core.shard import ShardManager
 from plutus.core.types import Shard
 from plutus.core.decorators import shared, synced
@@ -69,11 +69,11 @@ class TestCRDTStore:
 
     def test_list(self):
         store = CRDTStore()
-        l = store.get_list("items")
-        l.insert(0, "a")
-        l.insert(1, "b")
+        items = store.get_list("items")
+        items.insert(0, "a")
+        items.insert(1, "b")
         store.commit()
-        assert l.get_deep_value() == ["a", "b"]
+        assert items.get_deep_value() == ["a", "b"]
 
     def test_text(self):
         store = CRDTStore()

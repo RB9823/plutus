@@ -18,7 +18,7 @@ git checkout -b feat/your-change
 ```bash
 uv run pytest tests/ -v
 ```
-3. Optional static checks:
+3. Run static checks:
 ```bash
 uv run ruff check src tests
 uv run mypy src

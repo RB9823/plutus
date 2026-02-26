@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgpack
+import msgpack  # type: ignore[import-untyped]
 
 
 def pack(obj: Any) -> bytes:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from threading import Lock
+from typing import Callable
 
 import anyio
 
@@ -28,7 +29,7 @@ class DiffBroadcaster:
         self._transport = transport
         self._event_log = event_log
         self._running = False
-        self._local_update_cb = None
+        self._local_update_cb: Callable[[bytes], bool] | None = None
         self._suppress_local_updates = 0
         self._pending_send, self._pending_recv = anyio.create_memory_object_stream[bytes](1024)
         self._pending_lock = Lock()
@@ -74,7 +75,7 @@ class DiffBroadcaster:
     def start_local_subscription(self) -> None:
         """Subscribe to local updates and enqueue them for async broadcast."""
         self._local_update_cb = self._on_local_update
-        self._store.on_local_update(self._local_update_cb)
+        self._store.on_local_update(self._on_local_update)
 
     async def broadcast_update(self, update_bytes: bytes) -> None:
         """Broadcast an update to the transport and append it to the event log."""

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypeVar
+
+_T = TypeVar("_T", bound=type)
 
 
 class synced:
@@ -43,7 +45,7 @@ class synced:
                 doc.commit()
 
 
-def shared(cls: type | None = None, *, ns: str = "state") -> Any:
+def shared(cls: _T | None = None, *, ns: str = "state") -> Any:
     """Class decorator that auto-registers synced descriptors with a namespace.
 
     Usage:
@@ -51,12 +53,12 @@ def shared(cls: type | None = None, *, ns: str = "state") -> Any:
         class MyAgent(PlutusAgent):
             task_count = synced(default=0)
     """
-    def wrap(cls: type) -> type:
+    def wrap(cls: _T) -> _T:
         for attr_name in list(vars(cls)):
             attr = getattr(cls, attr_name)
             if isinstance(attr, synced):
                 attr.ns = ns
-        cls._plutus_shared_ns = ns
+        setattr(cls, "_plutus_shared_ns", ns)
         return cls
 
     if cls is not None:

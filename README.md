@@ -57,8 +57,8 @@ anyio.run(main)
 
 - Setup: `uv sync --group dev`
 - Tests: `uv run pytest tests/ -v`
-- Optional linting: `uv run ruff check src tests`
-- Optional type checking: `uv run mypy src`
+- Linting: `uv run ruff check src tests`
+- Type checking: `uv run mypy src`
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for full contributor workflow.
 

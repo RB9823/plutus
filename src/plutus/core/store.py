@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from threading import RLock
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from loro import ExportMode, LoroCounter, LoroDoc, LoroList, LoroMap, LoroText, VersionVector
 
@@ -82,4 +82,4 @@ class CRDTStore:
 
     def get_deep_value(self) -> dict[str, Any]:
         with self._lock:
-            return self._doc.get_deep_value()
+            return cast(dict[str, Any], self._doc.get_deep_value())

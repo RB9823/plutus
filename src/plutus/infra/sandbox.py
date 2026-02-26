@@ -43,7 +43,8 @@ class LocalSandboxAdapter(SandboxAdapter):
     async def exec(self, command: str) -> str:
         import anyio
         result = await anyio.run_process(
-            command, shell=True, cwd=self._working_dir
+            ["/bin/sh", "-lc", command],
+            cwd=self._working_dir,
         )
         return result.stdout.decode()
 
@@ -66,9 +67,9 @@ class E2BSandboxAdapter(SandboxAdapter):
 
     async def start(self) -> None:
         try:
-            from e2b import AsyncSandbox
+            from e2b import AsyncSandbox  # type: ignore[import-not-found]
         except ImportError:
-            raise ImportError("e2b package required: pip install plutus[e2b]")
+            raise ImportError("e2b package required: pip install plutus-sync[e2b]")
         kwargs: dict[str, Any] = {"template": self._template}
         if self._api_key:
             kwargs["api_key"] = self._api_key

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Iterator
+from typing import Any, Iterator, cast
 
 from loro import LoroMap
 
@@ -25,11 +25,11 @@ class Namespace:
         return self._name
 
     def get(self, key: str, default: Any = None) -> Any:
-        result = self._map.get(key)
+        result: Any = self._map.get(key)
         if result is None:
             return default
-        if hasattr(result, "is_value") and result.is_value:
-            return result.value
+        if hasattr(result, "value"):
+            return getattr(result, "value")
         return result
 
     def set(self, key: str, value: Any) -> None:
@@ -57,7 +57,7 @@ class Namespace:
         return list(self._map.items())
 
     def to_dict(self) -> dict[str, Any]:
-        return self._map.get_deep_value()
+        return cast(dict[str, Any], self._map.get_deep_value())
 
     def __contains__(self, key: str) -> bool:
         return key in self._map

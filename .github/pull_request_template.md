@@ -5,8 +5,8 @@ Describe the change and why it is needed.
 ## Validation
 
 - [ ] `uv run pytest tests/ -v`
-- [ ] (Optional) `uv run ruff check src tests`
-- [ ] (Optional) `uv run mypy src`
+- [ ] `uv run ruff check src tests`
+- [ ] `uv run mypy src`
 
 ## Checklist
 

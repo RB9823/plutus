@@ -43,7 +43,10 @@ class TestLifecycleManager:
     def test_off(self):
         mgr = LifecycleManager()
         calls = []
-        fn = lambda: calls.append(1)
+
+        def fn():
+            calls.append(1)
+
         mgr.on(LifecycleEvent.AFTER_JOIN, fn)
         mgr.off(LifecycleEvent.AFTER_JOIN, fn)
         mgr.fire(LifecycleEvent.AFTER_JOIN)
@@ -176,7 +179,7 @@ class TestBlueprint:
 
         bp = Blueprint("shared")
         bp.add_node("write", writer)
-        ctx = await bp.execute(doc=doc)
+        await bp.execute(doc=doc)
 
         assert doc.namespace("blueprint").get("data") == "shared_value"
 
