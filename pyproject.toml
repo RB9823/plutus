@@ -2,13 +2,37 @@
 name = "plutus"
 version = "0.1.0"
 description = "CRDT-based state management for agentic swarms"
+readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
+authors = [
+    { name = "Plutus Contributors" },
+]
+keywords = ["crdt", "agents", "swarm", "collaboration", "distributed-systems"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Distributed Computing",
+]
 dependencies = [
     "loro>=1.10.0",
     "msgpack>=1.0",
     "websockets>=13.0",
     "anyio>=4.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/your-org/plutus"
+Repository = "https://github.com/your-org/plutus"
+Issues = "https://github.com/your-org/plutus/issues"
+Documentation = "https://github.com/your-org/plutus#readme"
 
 [project.optional-dependencies]
 e2b = ["e2b>=1.0"]
@@ -28,6 +52,8 @@ testpaths = ["tests"]
 [dependency-groups]
 dev = [
     "anyio>=4.12.1",
+    "mypy>=1.13.0",
     "pytest>=9.0.2",
     "pytest-asyncio>=1.3.0",
+    "ruff>=0.8.0",
 ]

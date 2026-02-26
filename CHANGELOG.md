@@ -40,3 +40,13 @@
 ## 2026-02-26 - Batch 6: Graceful Leave Flush
 - Added pending-update drain tracking in `DiffBroadcaster` and `flush_pending(timeout=...)`.
 - Updated `PlutusAgent.leave()` to await pending broadcast queue drain before stopping loops and closing transport, reducing last-moment message drops.
+
+## 2026-02-26 - Batch 7: OSS Packaging + Fast Onboarding (uv-first)
+- Added open-source project fundamentals: `README.md`, `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`.
+- Added release guide at `docs/RELEASING.md` with uv-based build/publish process and Trusted Publishing notes.
+- Added GitHub collaboration/release automation:
+  - `.github/workflows/ci.yml` (uv-based matrix test CI)
+  - `.github/workflows/publish.yml` (Release-triggered PyPI publish)
+  - issue templates and PR template for contributor onboarding.
+- Expanded `pyproject.toml` package metadata (readme, license, classifiers, keywords, project URLs) for PyPI/open-source discoverability.
+- Verified release packaging with `uv build` and kept contributor default checks fast (`pytest` required, lint/type optional).

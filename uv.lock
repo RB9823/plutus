@@ -544,8 +544,10 @@ e2b = [
 [package.dev-dependencies]
 dev = [
     { name = "anyio" },
+    { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -565,8 +567,10 @@ provides-extras = ["e2b", "dev"]
 [package.metadata.requires-dev]
 dev = [
     { name = "anyio", specifier = ">=4.12.1" },
+    { name = "mypy", specifier = ">=1.13.0" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-asyncio", specifier = ">=1.3.0" },
+    { name = "ruff", specifier = ">=0.8.0" },
 ]
 
 [[package]]
